@@ -84,10 +84,27 @@ socket.on('chatMsg', function (message, callback) {
 	if(message.msg.indexOf("!greet") == 0) {
 		greet();
 	}
+	//farewell
+	if(message.msg.indexOf("!bye") == 0) {
+		farewell();
+	}
+	//Roll
+	if(message.msg.indexOf("!roll") == 0) {
+		var roll = getRoll();
+		socket.emit('chatMsg', {'msg': message.username + " you rolled " + roll + "!"});
+	}
+	//help
+	if(message.msg.indexOf("!help") == 0) {
+		socket.emit('chatMsg', {'msg': "Commands are: !greet, !bye, !ask, !roll, !source, !help"});
+	}
+	//source code
+	if(message.msg.indexOf("!source") == 0) {
+		socket.emit('chatMsg', {'msg': "http://github.com/Twirlie/Rin"});
+	}
 	function ask(args){
 		if(args.length > 0){
 			var roll = getRoll();
-			log("Rolled: ")
+			log("Rolled: " + roll);
 			if(roll > 5) {
 				socket.emit('chatMsg', {'msg': "*" + args + ":* " + "Yes"});
 			}
@@ -114,6 +131,9 @@ socket.on('chatMsg', function (message, callback) {
 	}
 	function greet(){
 		socket.emit('chatMsg', {'msg': "Hello " + message.username + "."});
+	}
+	function farewell(){
+		socket.emit('chatMsg', {'msg': "Bye " + message.username + "."});
 	}
 });
 //
