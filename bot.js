@@ -3,6 +3,7 @@
 //require modules
 var io = require('socket.io-client');
 var fs = require('fs');
+var irc = require('irc');
 //logging
 var log = function(msg) {
 	d = new Date();
@@ -21,26 +22,83 @@ var log = function(msg) {
 	console.log("[" + d1 + ":" + d2 + ":" + d3 + '] ' + msg);
 };
 //read config file
-var config = JSON.parse(fs.readFileSync('config.json','utf-8'));
-//socket stuff(temp desc)
-var socket = io.connect(config.server);
+var config = JSON.parse(fs.readFileSync('config.js','utf-8'));
+//Join server and channel
+var socket = io.connect(config.cyserver);
 socket.on('connect', function () {
-    socket.emit('login', { name: config.username, pw: config.pw });
+    socket.emit('login', { name: config.cyuser, pw: config.cypw });
     log("logging in...");
-    socket.emit('joinChannel', { name: config.channel });
+    socket.emit('joinChannel', { name: config.cychannel });
     log("joining channel...");
 });
 //get userlist
 var uList;
 socket.on('userlist', function(message, callback){
-	console.dir(message);
+	log("grabbing userlist...");
 	uList = message;
 });
+//
+//irc client
+//
+var client = new irc.Client(config.ircserver, config.ircuser, {
+	channels: [config.ircchannel]
+});
+//register with nickserver
+var registered = false;
+client.addListener('registered', function() {
+	log("Connected!");
+	client.say('NickServ', 'identify ' + config.ircnickpass);
+});
+client.addListener('join', function(){
+	log('Registered with NickServ');
+	registered = true;
+})
+client.addListener('error', function(message) {
+    log('error: ', message);
+});
+//
 //log messages and chat commands
+//
 socket.on('chatMsg', function (message, callback) {
 	log(message.username + ": " + message.msg);
-	//get rank
-	var rank = getRank();
+	if(registered == true) {
+		client.say(config.ircchannel, "(" + message.username + ") " + message.msg);
+	}
+	//
+	//commands
+	//
+	//test command
+	if(message.msg.indexOf("!test") == 0) {
+		log("Username: " + message.username);
+		log("Message: " + message.msg);
+		var rank = getRank();
+		log("Rank: " + rank);
+		var roll = getRoll();
+		log("Rolled: " + roll);
+	}
+	//ask
+	if(message.msg.indexOf("!ask") == 0) {
+		ask(message.msg.substring(5));
+	}
+	//greet
+	if(message.msg.indexOf("!greet") == 0) {
+		greet();
+	}
+	function ask(args){
+		if(args.length > 0){
+			var roll = getRoll();
+			log("Rolled: ")
+			if(roll > 5) {
+				socket.emit('chatMsg', {'msg': "*" + args + ":* " + "Yes"});
+			}
+			else {
+				socket.emit('chatMsg', {'msg': "*" + args + ":* " + "No"});
+			}
+		}
+		else {
+			socket.emit('chatMsg', {'msg': "error: no arguments"});
+		}
+	}
 	function getRank(){
 		for(var i=0;i<uList.length;i++){
 			if(uList[i].name == message.username){
@@ -50,22 +108,18 @@ socket.on('chatMsg', function (message, callback) {
 			}
 		}
 	}
-	//commands
-	if(message.msg == "!test"){
-		log("**This user's rank is " + rank);
-		socket.emit('chatMsg', {'msg': "This is a test command"});	
+	function getRoll(){
+		var ranNum = Math.floor((Math.random()*10)+1); 
+		return ranNum;
 	}
-	if(message.msg == "!test2"){
-		log("**This user's rank is " + rank);
-		if(rank > 2){
-			socket.emit('chatMsg', {'msg': message.username + " you have access!"});
-		}
-		else{
-			socket.emit('chatMsg', {'msg': message.username + ", access denied"});
-		}
+	function greet(){
+		socket.emit('chatMsg', {'msg': "Hello " + message.username + "."});
 	}
-	if(message.msg == "!rank"){
-		log("**This user's rank is " + rank);
-		socket.emit('chatMsg', {'msg': message.username + ", your user rank is " + rank});
-	}
+});
+//
+//irc messages
+//
+client.addListener('message', function(from, to, msg) {
+	log(from + ' to ' + to + ': ' + msg);
+	socket.emit('chatMsg', {'msg': from + "@" + config.ircchannel + ": " + msg})
 });
