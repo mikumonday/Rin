@@ -1,0 +1,6 @@
+{
+    "server": "http://localhost:8080",
+    "username": "username",
+    "pw": "password",
+    "channel": "channelname"
+}
