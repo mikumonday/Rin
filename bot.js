@@ -22,11 +22,7 @@ var log = function(msg) {
 	console.log("[" + d1 + ":" + d2 + ":" + d3 + '] ' + msg);
 };
 //read config file
-<<<<<<< HEAD
 var config = JSON.parse(fs.readFileSync('config.json','utf-8'));
-=======
-var config = JSON.parse(fs.readFileSync('config.js','utf-8'));
->>>>>>> 2f67cda84fbecaedc228df3f7d0b698773a024f5
 //Join server and channel
 var socket = io.connect(config.cyserver);
 socket.on('connect', function () {
