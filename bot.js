@@ -132,7 +132,7 @@ function commands(source, user, message){
 			socket.emit('chatMsg', {'msg': "http://github.com/Twirlie/Rin"});
 		}
 		else {
-			client.say(config.ircchannel, "Commands are: !greet, !bye, !ask, !roll, !source, !help");
+			client.say(config.ircchannel, "http://github.com/Twirlie/Rin");
 		}
 	}
 	function ask(args){
