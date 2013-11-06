@@ -128,7 +128,7 @@ function commands(source, user, message){
 	}
 	//source code
 	if(message.indexOf("!source") == 0) {
-		if(source == "cytybe") {
+		if(source == "cytube") {
 			socket.emit('chatMsg', {'msg': "http://github.com/Twirlie/Rin"});
 		}
 		else {
