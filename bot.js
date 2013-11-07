@@ -10,6 +10,7 @@ var log = function(msg) {
 	d1 = d.getHours();
 	d2 = d.getMinutes();
 	d3 = d.getSeconds();
+	d4 = d.getMilliseconds();
 	if(d1 < 10){
 		d1= "0" + d1;
 	}
@@ -19,7 +20,13 @@ var log = function(msg) {
 	if(d3 < 10){
 		d3= "0" + d3;
 	}
-	console.log("[" + d1 + ":" + d2 + ":" + d3 + '] ' + msg);
+	if (d4 < 100) {
+		d4= "0" + d4;
+		if(d4 < 10) {
+			d4= "0" + d4;
+		}
+	}
+	console.log("[" + d1 + ":" + d2 + ":" + d3 + ":" + d4 + '] ' + msg);
 };
 //read config file
 var config = JSON.parse(fs.readFileSync('config.json','utf-8'));
@@ -32,11 +39,33 @@ socket.on('connect', function () {
     log("joining channel...");
 });
 //get userlist
-var uList;
+var uList = [];
 socket.on('userlist', function(message, callback){
 	log("grabbing userlist...");
-	uList = message;
+	var joinList = message;
+	log(JSON.stringify(joinList));
+	for(var i=0;i<joinList.length;i++) {
+		addToList(joinList[i].name, joinList[i].rank);
+	}
 });
+//user joins
+socket.on("addUser", function(message, callback){
+	log("cytube debug- " + message.name + " has joined.");
+	log(message.name);
+	log(message.rank);
+	for(var i=0;i<uList.length;i++){
+		if(uList[i].name == message.name){
+			log(message.name + " already in uList");
+			break;
+		} else {
+			addToList(message.name, message.rank);
+		}
+	}
+});
+function addToList(name, rank) {
+		var user = {"name": name, "rank": rank};
+		uList.push(user);
+};
 //
 //irc client
 //
@@ -66,8 +95,8 @@ socket.on('chatMsg', function (message, callback) {
 			client.say(config.ircchannel, "(" + message.username + ") " + message.msg);
 		}
 	}
-	if(message.msg.indexOf("!") == 0) {
-		commands("cytube", message.username, message.msg)
+	if(message.msg.indexOf(config.commandchar) == 0) {
+		commands("cytube", message.username, message.msg);
 	}
 });
 //
@@ -75,8 +104,8 @@ socket.on('chatMsg', function (message, callback) {
 //
 client.addListener('message', function(from, to, msg) {
 	log("irc- " + from + ' to ' + to + ': ' + msg);
-	if(msg.indexOf("!") == 0) {
-		commands("irc", from, msg)
+	if(msg.indexOf(config.commandchar) == 0) {
+		commands("irc", from, msg);
 	}
 	if(to == config.ircchannel){
 		socket.emit('chatMsg', {'msg': from + "@" + config.ircchannel + ": " + msg})
@@ -87,28 +116,23 @@ function commands(source, user, message){
 	//commands
 	//
 	//test command
-	if(message.indexOf("!test") == 0) {
-		log("Username: " + user);
-		log("Message: " + user);
-		var rank = getRank();
-		log("Rank: " + rank);
-		var roll = getRoll();
-		log("Rolled: " + roll);
+	if(message.indexOf(config.commandchar + "test") == 0) {
+		test(message.substring(6));
 	}
 	//ask
-	if(message.indexOf("!ask") == 0) {
+	if(message.indexOf(config.commandchar + "ask") == 0) {
 		ask(message.substring(5));
 	}
 	//greet
-	if(message.indexOf("!greet") == 0) {
+	if(message.indexOf(config.commandchar + "greet") == 0) {
 		greet();
 	}
 	//farewell
-	if(message.indexOf("!bye") == 0) {
+	if(message.indexOf(config.commandchar + "bye") == 0) {
 		farewell();
 	}
 	//Roll
-	if(message.indexOf("!roll") == 0) {
+	if(message.indexOf(config.commandchar + "roll") == 0) {
 		var roll = getRoll();
 		if(source == "cytube") {
 			socket.emit('chatMsg', {'msg': user + " you rolled " + roll + "!"});
@@ -118,7 +142,7 @@ function commands(source, user, message){
 		}
 	}
 	//help
-	if(message.indexOf("!help") == 0) {
+	if(message.indexOf(config.commandchar + "help") == 0) {
 		if(source == "cytube") {
 			socket.emit('chatMsg', {'msg': "Commands are: !greet, !bye, !ask, !roll, !source, !help"});
 		}
@@ -127,12 +151,32 @@ function commands(source, user, message){
 		}
 	}
 	//source code
-	if(message.indexOf("!source") == 0) {
+	if(message.indexOf(config.commandchar + "source") == 0) {
 		if(source == "cytube") {
 			socket.emit('chatMsg', {'msg': "http://github.com/Twirlie/Rin"});
 		}
 		else {
 			client.say(config.ircchannel, "http://github.com/Twirlie/Rin");
+		}
+	}
+	function test(args) {
+		if(args.length > 0) {
+			if(args == "uList") {
+				log(JSON.stringify(uList));
+			}
+			if (args == "print") {
+				var rank = getRank();
+				var roll = getRoll();
+				socket.emit('chatMsg', {"msg": "Username: " + user + " Message: " + message + " Rank: " + rank + " Roll: " + roll});
+				client.say(config.ircchannel, "Username: " + user + " Message: " + message + " Rank: " + rank + " Roll: " + roll);
+			}
+		} else {
+			log("Username: " + user);
+			log("Message: " + message);
+			var rank = getRank();
+			log("Rank: " + rank);
+			var roll = getRoll();
+			log("Rolled: " + roll);
 		}
 	}
 	function ask(args){

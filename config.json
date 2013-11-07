@@ -6,5 +6,6 @@
     "ircserver": "irc server",
     "ircuser": "irc user",
     "ircchannel": "irc channel",
-    "ircnickpass": "NSPassword"
+    "ircnickpass": "NSPassword",
+    "commandchar": "!"
 }
