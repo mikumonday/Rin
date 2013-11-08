@@ -50,17 +50,20 @@ socket.on('userlist', function(message, callback){
 });
 //user joins
 socket.on("addUser", function(message, callback){
-	log("cytube debug- " + message.name + " has joined.");
-	log(message.name);
-	log(message.rank);
-	for(var i=0;i<uList.length;i++){
-		if(uList[i].name == message.name){
-			log(message.name + " already in uList");
-			break;
-		} else {
-			addToList(message.name, message.rank);
+	log("cytube- " + message.name + " has joined.");
+	if (message.name !== config.cyuser) {
+		for(var i=0;i<uList.length;i++){
+			if(uList[i].name == message.name){
+				log(message.name + " is already in uList");
+				break;
+			}
+			if (i == uList.length - 1) {
+				addToList(message.name, message.rank);
+				break;
+			}
 		}
 	}
+	log("Rank: " + message.rank);
 });
 function addToList(name, rank) {
 		var user = {"name": name, "rank": rank};
@@ -117,7 +120,7 @@ function commands(source, user, message){
 	//
 	//test command
 	if(message.indexOf(config.commandchar + "test") == 0) {
-		test(message.substring(6));
+		test(message.substring(6).split(" "));
 	}
 	//ask
 	if(message.indexOf(config.commandchar + "ask") == 0) {
@@ -161,10 +164,10 @@ function commands(source, user, message){
 	}
 	function test(args) {
 		if(args.length > 0) {
-			if(args == "uList") {
+			if(args[0] == "uList") {
 				log(JSON.stringify(uList));
 			}
-			if (args == "print") {
+			if (args[0] == "print") {
 				var rank = getRank();
 				var roll = getRoll();
 				socket.emit('chatMsg', {"msg": "Username: " + user + " Message: " + message + " Rank: " + rank + " Roll: " + roll});
