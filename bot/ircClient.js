@@ -2,4 +2,4 @@
 / Require modules
 */
 
-var irc = require('irc');
+//var irc = require('irc');
