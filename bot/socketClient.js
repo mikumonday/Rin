@@ -83,7 +83,7 @@ socket.on('queue', function(message) {
           }
           headCount++;
           if(headCount == result.users.length && found == false) {
-            db.update({ vid: message.item.media.id, user: message.item.user});
+            db.update({ vid: message.item.media.id, user: message.item.queueby});
             break;
           }
         }
