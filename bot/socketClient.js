@@ -5,7 +5,7 @@
 var   io = require('socket.io-client'),
      cfg = require('../config'),
       db = require('../lib/db'),
-commands = require('./commands'),
+     cmd = require('./commands'),
      log = require('../lib/log');
 
 /*
@@ -99,4 +99,13 @@ socket.on('changeMedia', function(message) {
 });
 socket.on('chatMsg', function (message) {
   log("cytube- " + message.username + ": " + message.msg);
+  if(message.msg.indexOf(cfg.commandchar) === 0) {
+    cmd(message, function(callback) {
+      callback;
+    });
+  }
 });
+
+module.exports.emit = function(type, message) {
+    socket.emit(type, message);
+}
