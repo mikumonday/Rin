@@ -9,7 +9,6 @@ var express = require('express'),
        http = require('http'),
        path = require('path'),
      socket = require('./bot/socketClient'),
-        irc = require('./bot/ircClient'),
          db = require('./lib/db'),
         cfg = require('./config'),
         log = require('./lib/log');
@@ -34,6 +33,14 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
+
+app.param('vidId', function(req, res, next, vidId) {
+  db.findOne(vidId, function(result) {
+    req.data = result;
+    next();
+  });
+});
+app.get('/vid/:vidId', routes.vid);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

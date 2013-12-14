@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  .row
+    .col-sm-12
+      .centered
+        .well
+          h1 #{data.title}
+        .well
+          h2 #{data.vid}
+          h3 #{data.type}
+          h4 #{data.users}
+          p forbbiden: #{data.forbidden}
+          p protected: #{data.protect}
+        .well
+          iframe(width="560" height="315" src="//www.youtube.com/embed/" +data.vid frameborder="0" allowfullscreen)
