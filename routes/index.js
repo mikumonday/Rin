@@ -6,10 +6,8 @@ var db = require('../lib/db');
 
 module.exports = {
   index: function(req, res){
-    var docs;
     db.findAny(function(result) {
-      docs = result;
-      res.render('index', {data: docs, title: 'Rin!'});
+      res.render('index', {data: result, title: 'Rin!'});
     });
   },
   vid: function(req, res) {

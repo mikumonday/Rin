@@ -76,7 +76,7 @@ socket.on('queue', function(message) {
         var headCount = 0,
         found = false;
         for(var i = 0; i < 100; i++) {
-          if(result.users[i] == message.item.user) {
+          if(result.users[i] == message.item.queueby) {
             found = true;
             log("headcount: user found");
             break;

@@ -7,10 +7,11 @@ block content
         .well
           h1 #{data.title}
         .well
-          h2 #{data.vid}
-          h3 #{data.type}
-          h4 #{data.users}
-          p forbbiden: #{data.forbidden}
-          p protected: #{data.protect}
+          a(href="http://youtube.com/watch?v=" +data.vid)
+            h2 http://youtube.com/watch?v=#{data.vid}
+          H4 added by:
+          -each user in data.users
+            p= user
         .well
           iframe(width="560" height="315" src="//www.youtube.com/embed/" +data.vid frameborder="0" allowfullscreen)
+          
