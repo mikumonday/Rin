@@ -1,0 +1,24 @@
+doctype 5
+html
+  head
+    meta(name="viewport" content="width=device-width")
+    title= title
+    link(rel='stylesheet', href='/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/css/bootstrap-theme.css')
+    link(rel='stylesheet', href='/css/style.css')
+  body
+    nav(class='navbar navbar-inverse', role='navigation')
+      div.navbar-header
+        button(type='button', class='navbar-toggle' data-toggle='collapse' data-target='#collapse1')
+          span.sr-only Toggle navigation
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+        a(href='/' class='navbar-brand') Rin
+      div(class='collapse navbar-collapse' id='collapse1')
+        .navbar-right
+          ul(class='nav navbar-nav')
+            li
+    .container
+      block content
+    script(src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js" type="text/javascript")
