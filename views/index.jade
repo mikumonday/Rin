@@ -13,4 +13,17 @@ block content
               a(href="/vid/" +docs.vid)
                 h4 #{docs.title}
               p added by #{docs.users}
-              
+      ul(class="pagination")
+        -var previousPage = pageId - 1, nextPage = pageId + 1;
+        if pageId === 0
+          li(class="disabled")
+            a(href='#') Previous
+        else
+          li
+            a(href='/' +previousPage) Previous
+        if pageEnd === true
+          li(class="disabled")
+            a(href='#') Next
+        else
+          li
+            a(href='/' +nextPage) Next

@@ -31,7 +31,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
-
+app.param(':pageId', function(req, res, next, pageId) {
+  db.findWithPage(pageId, function(result) {
+    req.data = result;
+    req.pageId = Number(pageId);
+    if(result.length < pageId) {
+      req.pageEnd = true;
+    } else {
+      req.pageEnd = false;
+    }
+    next();
+  });
+});
+app.get('/:pageId', routes.page);
 app.get('/', routes.index);
 
 app.param('vidId', function(req, res, next, vidId) {

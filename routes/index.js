@@ -6,9 +6,10 @@ var db = require('../lib/db');
 
 module.exports = {
   index: function(req, res){
-    db.findAny(function(result) {
-      res.render('index', {data: result, title: 'Rin!'});
-    });
+    res.redirect('/0');
+  },
+  page: function(req, res) {
+    res.render('index', {data: req.data, pageId: req.pageId, pageEnd: req.pageEnd, title: 'Rin!'});
   },
   vid: function(req, res) {
     res.render('vid', { data: req.data, title: req.data.title });

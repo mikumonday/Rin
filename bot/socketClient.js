@@ -8,6 +8,8 @@ var   io = require('socket.io-client'),
      cmd = require('./commands'),
      log = require('../lib/log');
 
+var current;     
+
 /*
 / connection region
 */
@@ -83,7 +85,7 @@ socket.on('queue', function(message) {
           }
           headCount++;
           if(headCount == result.users.length && found == false) {
-            db.update({ vid: message.item.media.id, user: message.item.queueby});
+            db.updateUsers({ vid: message.item.media.id, user: message.item.queueby});
             break;
           }
         }
@@ -95,7 +97,9 @@ socket.on('queueFail', function(message) {
   //stuff goes here
 });
 socket.on('changeMedia', function(message) {
-  //stuff goes here
+  log(message.id);
+  current = message.id;
+  module.exports.currentVideo = current;
 });
 socket.on('chatMsg', function (message) {
   log("cytube- " + message.username + ": " + message.msg);

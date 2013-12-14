@@ -37,14 +37,38 @@ module.exports = function(message, callback) {
       var roll = getRoll();
       callback(socket.emit('chatMsg', {'msg': user + " you rolled " + roll + "!"}));
     },
-    add: function() {
-      //add command
+    add: function(args) {
+      var total = args.valueOf(), count = 0, queuePackages = [];
+      if(total > 0) {
+        db.findAny(function(result) {
+          for(var i=0;i<100;i++) {
+            var roll = getRoll();
+            if(result.length == i) {
+              i = 0;
+            }
+            if(count < total) {
+              if(roll > 5) {
+                if(result[i].forbidden === false) {
+                  var queuePackage = {'vid': result[i].vid, 'site': result[i].type, 'pos': "end"};
+                  queuePackages.push(queuePackage);
+                  count++;
+                }
+              }
+            } else {
+              addMedia(queuePackages);
+              break;
+            }
+          }
+        });
+      }
     },
     forbid: function() {
-      //forbid command
+      db.updateForbid(socket.currentVideo);
+      callback(socket.emit('chatMsg', {'msg': socket.currentVideo +" is now forbidden."}));
     },
     protect: function() {
-      //protect command
+      db.updateProtect(socket.currentVideo);
+      callback(socket.emit('chatMsg', {'msg': socket.currentVideo +" is now protected."}));
     },
     help: function() {
       callback(socket.emit('chatMsg', {'msg': "Commands are: !greet, !bye, !ask, !roll, !source, !help"}));
@@ -68,7 +92,7 @@ module.exports = function(message, callback) {
       command.roll();
       break;
     case 'add':
-      command.add();
+      command.add(msg.substring(5));
       break;
     case 'forbid':
       command.forbid();
@@ -93,4 +117,21 @@ module.exports = function(message, callback) {
 function getRoll(){
   var ranNum = Math.floor((Math.random()*10)+1); 
   return ranNum;
+}
+function addMedia(queuePackages) {
+  var i = 0;
+      var interv = setInterval(function() {
+        if(queuePackages.length > i) {
+          var packet = {
+            'id': queuePackages[i].vid,
+            'type': queuePackages[i].site,
+            'pos': queuePackages[i].pos
+          }
+          socket.emit('queue', packet);
+          log('cytube debug- ' + queuePackages[i].vid + ' added');
+          i++;
+        } else {
+          clearInterval(interv);
+        }
+      }, 1500);
 }
