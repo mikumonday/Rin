@@ -3,5 +3,6 @@ module.exports = {
     "cyuser": "username",
     "cypw": "password",
     "cychannel": "channel name",
+    "expressport": 3000,
     "commandchar": "!"
 }
