@@ -33,7 +33,7 @@ app.param(':pageId', function(req, res, next, pageId) {
   db.findWithPage(pageId, function(result) {
     req.data = result;
     req.pageId = Number(pageId);
-    if(result.length < pageId) {
+    if(result.length < 10) {
       req.pageEnd = true;
     } else {
       req.pageEnd = false;
