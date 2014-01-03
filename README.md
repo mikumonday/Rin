@@ -1,2 +1,2 @@
-#nodejs CyTube bot
-channel bot for [CyTube](https://github.com/calzoneman/sync).
+#This repository can go fuck itself
+.
