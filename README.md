@@ -1,2 +1,2 @@
-#This repository can go fuck itself
-.
+#Rin bot
+yeah yeah something
