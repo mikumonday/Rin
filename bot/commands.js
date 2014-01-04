@@ -73,7 +73,7 @@ module.exports = function(message, callback) {
       callback(socket.emit('chatMsg', {'msg': "Commands are: !greet, !bye, !ask, !roll, !source, !help"}));
     },
     source: function() {
-      callback(socket.emit('chatMsg', {'msg': "http://github.com/Twirlie/Rin"}));
+      callback(socket.emit('chatMsg', {'msg': "http://github.com/mikumonday/Rin"}));
     }
   };
   switch(cmd) {

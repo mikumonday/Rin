@@ -17,12 +17,12 @@ var current;
 / connection region
 */
 
-var socket = io.connect(cfg.cyserver);
+var socket = io.connect(cfg.cytube.server);
 socket.on('connect', function (err) {
-    socket.emit('login', { name: cfg.cyuser, pw: cfg.cypw });
-    log("logging in as " + cfg.cyuser);
-    socket.emit('joinChannel', { name: cfg.cychannel });
-    log("joining channel " + cfg.cychannel);
+    socket.emit('login', { name: cfg.cytube.user, pw: cfg.cytube.pw });
+    log("logging in as " + cfg.cytube.user);
+    socket.emit('joinChannel', { name: cfg.cytube.channel });
+    log("joining channel " + cfg.cytube.channel);
     if(err) {
       log("cytube- " + err);
     }
@@ -37,7 +37,7 @@ socket.on('userlist', function(message, callback){
 });
 //user joins
 socket.on("addUser", function(message){
-  if (message.name !== cfg.cyuser) {
+  if (message.name !== cfg.cytube.user) {
     for(var i=0;i<uList.length;i++){
       if(uList[i].name == message.name){
         break;
