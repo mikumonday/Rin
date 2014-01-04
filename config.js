@@ -14,5 +14,7 @@ module.exports = {
     "express": {
       "port": 3000
     },
-    "commandchar": "!"
+    "commandchar": "!",
+    "accessRank": "2",
+    "addInterval": 1500
 }
