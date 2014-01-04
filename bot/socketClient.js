@@ -98,7 +98,6 @@ socket.on('changeMedia', function(message) {
             db.updateVocaDB(message.id, data);
             if(data !== 'false') {
               vocadb.widgetUpdate(data, function(widget) {
-                log('4 : ' + widget);
                 socket.emit('setChannelJS', {'js': widget});
               });
             } else {
@@ -113,7 +112,6 @@ socket.on('changeMedia', function(message) {
         } else {
           if(result.vocaDB !== 'false') {
             vocadb.widgetUpdate(result.vocaDB, function(widget) {
-              log('4 : ' + widget);
               socket.emit('setChannelJS', {'js': widget});
             });
           } else {
