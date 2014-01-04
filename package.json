@@ -1,6 +1,6 @@
 {
   "name": "Rin",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "start": "node app.js"
@@ -9,6 +9,9 @@
     "express": "3.4.6",
     "jade": "*",
     "socket.io-client": "*",
-    "mongoose": "*"
+    "mongoose": "*",
+    "underscore": "*",
+    "log": "1.4.0",
+    "irc": "*"
   }
 }

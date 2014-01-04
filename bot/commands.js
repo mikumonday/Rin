@@ -15,7 +15,6 @@ module.exports = function(message, callback) {
     ask: function(args) {
       if(args.length > 0){
         var roll = getRoll();
-        log("Rolled: " + roll);
         if(roll > 5) {
           callback(socket.emit('chatMsg', {'msg': "*" + args + ":* " + "Yes"}));
         }
@@ -77,7 +76,6 @@ module.exports = function(message, callback) {
       callback(socket.emit('chatMsg', {'msg': "http://github.com/Twirlie/Rin"}));
     }
   };
-  log(rank);
   switch(cmd) {
     case 'ask':
       command.ask(msg.substring(5));
