@@ -3,13 +3,15 @@
 */
 var    db = require('../lib/db'),
       log = require('../lib/log'),
+      cfg = require('../config'),
    socket = require('./socketClient');
 
 module.exports = function(message, callback) {
   var msg = message.msg,
-  user = message.username,
-  rank = message.rank,
-  cmd = getCommand(),
+     user = message.username,
+     rank = message.rank,
+   access = cfg.accessRank,
+      cmd = getCommand(),
   //do the work here
   command = {
     ask: function(args) {
@@ -73,9 +75,11 @@ module.exports = function(message, callback) {
       callback(socket.emit('chatMsg', {'msg': "Commands are: !greet, !bye, !ask, !roll, !source, !help"}));
     },
     source: function() {
-      callback(socket.emit('chatMsg', {'msg': "http://github.com/Twirlie/Rin"}));
+      callback(socket.emit('chatMsg', {'msg': "http://github.com/mikumonday/Rin"}));
     }
   };
+  
+  //fires the commands, checks rank for access
   switch(cmd) {
     case 'ask':
       command.ask(msg.substring(5));
@@ -90,13 +94,19 @@ module.exports = function(message, callback) {
       command.roll();
       break;
     case 'add':
-      command.add(msg.substring(5));
+      if(rank >= access) {
+        command.add(msg.substring(5));
+      }
       break;
     case 'forbid':
-      command.forbid();
+      if(rank >= access) {
+        command.forbid();
+      }
       break;
     case 'protect':
-      command.protect();
+      if(rank >= access) {
+        command.protect();
+      }
       break;
     case 'help':
       command.help();
@@ -131,5 +141,5 @@ function addMedia(queuePackages) {
         } else {
           clearInterval(interv);
         }
-      }, 1500);
+      }, cfg.addInterval);
 }
