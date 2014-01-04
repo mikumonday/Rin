@@ -103,7 +103,10 @@ socket.on('changeMedia', function(message) {
               });
             } else {
               vocadb.widgetFalse(function(widget) {
-                socket.emit('setChannelJS', {'js': "FUCK YOUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"});
+                socket.emit('setChannelJS', {'js': "$('#yukarin').remove();" + 
+                                                   "$('#queue_align2').prepend" + 
+                                                   "(\"<div id='yukarin' class='well well-small'>" +
+                                                   "nothing to do here</div>);"});
               });
             }
           });
@@ -114,7 +117,10 @@ socket.on('changeMedia', function(message) {
               socket.emit('setChannelJS', {'js': widget});
             });
           } else {
-            socket.emit('setChannelJS', {'js': "FUCK YOUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"});
+            socket.emit('setChannelJS', {'js': "$('#yukarin').remove();" + 
+                                               "$('#queue_align2').prepend" + 
+                                               "(\"<div id='yukarin' class='well well-small'>" +
+                                               "nothing to do here</div>);"});
           }
         }
       }
