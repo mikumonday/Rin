@@ -9,6 +9,7 @@ module.exports = {
       "server": "irc server",
       "nick": "irc nickname",
       "channel": "irc channels",
+      "pw": "irc confirmation password",
       "onByDefault": false
     },
     "express": {
@@ -16,6 +17,7 @@ module.exports = {
     },
     "commandchar": "!",
     "accessRank": "2",
-    "addInterval": 1500.
-    "database": "cybot"
+    "addInterval": 1500,
+    "database": "cybot",
+    "host": "this host"
 }

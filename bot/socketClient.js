@@ -11,7 +11,15 @@ var   io = require('socket.io-client'),
   vocadb = require('../lib/vocadb'),
        _ = require('underscore');
 
-var current;
+var current,
+    vdbFail = "$('#yukarin').remove();" + 
+              "$('#queue_align2').prepend" + 
+              "(\"<div id='yukarin' class='well well-small'>" +
+              "Could not find the current video.</br>" +
+              "<a href='http://vocadb.net' target='_blank'" +
+              "class='btn btn-mini btn-warning vdb_btn'>" +
+              "vocaDB</a>" +
+              "</div>\");";
 
 /*
 / connection region
@@ -101,12 +109,7 @@ socket.on('changeMedia', function(message) {
                 socket.emit('setChannelJS', {'js': widget});
               });
             } else {
-              vocadb.widgetFalse(function(widget) {
-                socket.emit('setChannelJS', {'js': "$('#yukarin').remove();" + 
-                                                   "$('#queue_align2').prepend" + 
-                                                   "(\"<div id='yukarin' class='well well-small'>" +
-                                                   "nothing to do here</div>\");"});
-              });
+              socket.emit('setChannelJS', {'js': vdbFail});
             }
           });
         } else {
@@ -115,13 +118,12 @@ socket.on('changeMedia', function(message) {
               socket.emit('setChannelJS', {'js': widget});
             });
           } else {
-            socket.emit('setChannelJS', {'js': "$('#yukarin').remove();" + 
-                                               "$('#queue_align2').prepend" + 
-                                               "(\"<div id='yukarin' class='well well-small'>" +
-                                               "nothing to do here</div>\");"});
+            socket.emit('setChannelJS', {'js': vdbFail});
           }
         }
       }
+    } else {
+      socket.emit('setChannelJS', {'js': vdbFail});
     }
   });
 });
@@ -144,4 +146,7 @@ function getRank(user){
 
 module.exports.emit = function(type, message) {
     socket.emit(type, message);
+}
+module.exports.current = function() {
+    return current;
 }

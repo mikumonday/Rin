@@ -19,6 +19,18 @@ if(cfg.irc.onByDefault) {
   client.addListener('join', function(channel, nick, message) {
     log(nick + ' joined ' + channel);
   });
+  var registered = false;
+  client.addListener('registered', function() {
+    log("Connected!");
+    client.say('NickServ', 'identify ' + config.irc.pw);
+  });
+  client.addListener('join', function(){
+    log('Registered with NickServ');
+    registered = true;
+  })
+  client.addListener('error', function(message) {
+      log('error: ', message);
+  });
 }
 
 module.exports = {
