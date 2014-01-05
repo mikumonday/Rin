@@ -105,7 +105,7 @@ socket.on('changeMedia', function(message) {
                 socket.emit('setChannelJS', {'js': "$('#yukarin').remove();" + 
                                                    "$('#queue_align2').prepend" + 
                                                    "(\"<div id='yukarin' class='well well-small'>" +
-                                                   "nothing to do here</div>);"});
+                                                   "nothing to do here</div>\");"});
               });
             }
           });
@@ -118,7 +118,7 @@ socket.on('changeMedia', function(message) {
             socket.emit('setChannelJS', {'js': "$('#yukarin').remove();" + 
                                                "$('#queue_align2').prepend" + 
                                                "(\"<div id='yukarin' class='well well-small'>" +
-                                               "nothing to do here</div>);"});
+                                               "nothing to do here</div>\");"});
           }
         }
       }
@@ -128,11 +128,19 @@ socket.on('changeMedia', function(message) {
 socket.on('chatMsg', function (message) {
   irc.send(message.msg, message.user);
   if(message.msg.indexOf(cfg.commandchar) === 0) {
-    cmd(message, function(callback) {
-      callback();
-    });
+    cmd(message, getRank(message.username));
   }
 });
+
+function getRank(user){
+  for(var i=0;i<uList.length;i++){
+    if(uList[i].name === user){
+      var uRank = uList[i].rank;
+      return uRank;
+      break;
+    }
+  }
+}
 
 module.exports.emit = function(type, message) {
     socket.emit(type, message);

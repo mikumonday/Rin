@@ -6,10 +6,9 @@ var    db = require('../lib/db'),
       cfg = require('../config'),
    socket = require('./socketClient');
 
-module.exports = function(message, callback) {
+module.exports = function(message, rank) {
   var msg = message.msg,
      user = message.username,
-     rank = message.rank,
    access = cfg.accessRank,
       cmd = getCommand(),
   //do the work here
@@ -18,25 +17,25 @@ module.exports = function(message, callback) {
       if(args.length > 0){
         var roll = getRoll();
         if(roll > 5) {
-          callback(socket.emit('chatMsg', {'msg': "*" + args + ":* " + "Yes"}));
+          socket.emit('chatMsg', {'msg': "*" + args + ":* " + "Yes"});
         }
         else {
-          callback(socket.emit('chatMsg', {'msg': "*" + args + ":* " + "No"}));
+          socket.emit('chatMsg', {'msg': "*" + args + ":* " + "No"});
         }
       }
       else {
-          callback(socket.emit('chatMsg', {'msg': "error: no arguments"}));
+          socket.emit('chatMsg', {'msg': "error: no arguments"});
       }
     },
     greet: function() {
-      callback(socket.emit('chatMsg', {'msg': "Hello " + user + "."}));
+      socket.emit('chatMsg', {'msg': "Hello " + user + "."});
     },
     bye: function() {
-      callback(socket.emit('chatMsg', {'msg': "Bye " + user + "."}));
+      socket.emit('chatMsg', {'msg': "Bye " + user + "."});
     },
     roll: function() {
       var roll = getRoll();
-      callback(socket.emit('chatMsg', {'msg': user + " you rolled " + roll + "!"}));
+      socket.emit('chatMsg', {'msg': user + " you rolled " + roll + "!"});
     },
     add: function(args) {
       var total = args.valueOf(), count = 0, queuePackages = [];
@@ -65,17 +64,17 @@ module.exports = function(message, callback) {
     },
     forbid: function() {
       db.updateForbid(socket.currentVideo);
-      callback(socket.emit('chatMsg', {'msg': socket.currentVideo +" is now forbidden."}));
+      socket.emit('chatMsg', {'msg': socket.currentVideo +" is now forbidden."});
     },
     protect: function() {
       db.updateProtect(socket.currentVideo);
-      callback(socket.emit('chatMsg', {'msg': socket.currentVideo +" is now protected."}));
+      socket.emit('chatMsg', {'msg': socket.currentVideo +" is now protected."});
     },
     help: function() {
-      callback(socket.emit('chatMsg', {'msg': "Commands are: !greet, !bye, !ask, !roll, !source, !help"}));
+      socket.emit('chatMsg', {'msg': "Commands are: !greet, !bye, !ask, !roll, !source, !help"});
     },
     source: function() {
-      callback(socket.emit('chatMsg', {'msg': "http://github.com/mikumonday/Rin"}));
+      socket.emit('chatMsg', {'msg': "http://github.com/mikumonday/Rin"});
     }
   };
   
@@ -95,7 +94,10 @@ module.exports = function(message, callback) {
       break;
     case 'add':
       if(rank >= access) {
+        log('add passes');
         command.add(msg.substring(5));
+      } else {
+        log('add fails ' + rank + ' ' + access);
       }
       break;
     case 'forbid':

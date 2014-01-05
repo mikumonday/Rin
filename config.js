@@ -16,5 +16,6 @@ module.exports = {
     },
     "commandchar": "!",
     "accessRank": "2",
-    "addInterval": 1500
+    "addInterval": 1500.
+    "database": "cybot"
 }
