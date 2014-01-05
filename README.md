@@ -21,6 +21,8 @@ Cytube channel bot
 
 `channel` - the channel to join
 
+`pw` - the password used for registration
+
 `onByDefault` - the option to use IRC. *Off by default.*
 ###Web Interface
 `expressport` - the port Express will use for the web interface. *3000 by default.*
@@ -30,3 +32,7 @@ Cytube channel bot
 `accessRank` - the user rank need to use access commands. *2 by default.*
 
 `addInterval` - the interval between videos added via the add command. *1500(milliseconds) by default.*
+
+`database` - the name of the database used to store information on videos
+
+`host` - this is used to reference itself for links on the web
