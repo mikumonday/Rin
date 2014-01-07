@@ -101,7 +101,7 @@ socket.on('changeMedia', function(message) {
     if (result !== null) {
       if(typeof result.vocaDB === 'object' || 'undefined') {
         if(_.isEmpty(result.vocaDB)) {
-          vocadb.getByID(message.id, message.type, function(data) {
+          vocadb.getByService(message.id, message.type, function(data) {
             log('updating vdb');
             db.updateVocaDB(message.id, data);
             if(data !== 'false') {

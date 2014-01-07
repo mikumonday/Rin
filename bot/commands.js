@@ -4,7 +4,8 @@
 var    db = require('../lib/db'),
       log = require('../lib/log'),
       cfg = require('../config'),
-   socket = require('./socketClient');
+   socket = require('./socketClient'),
+   vocadb = require('../lib/vocadb');
 
 module.exports = function(message, rank) {
   var msg = message.msg,
@@ -75,6 +76,18 @@ module.exports = function(message, rank) {
     },
     source: function() {
       socket.emit('chatMsg', {'msg': "http://github.com/mikumonday/Rin"});
+    },
+    vocadb: function(args) {
+      vocadb.getById(args, function(data) {
+        db.updateVocaDB(socket.currentVideo, data);
+        if(data !== 'false') {
+          vocadb.widgetUpdate(data, function(widget) {
+            socket.emit('setChannelJS', {'js': widget});
+          });
+        } else {
+          socket.emit('setChannelJS', {'js': vdbFail});
+        }
+      });
     }
   };
   
@@ -115,6 +128,11 @@ module.exports = function(message, rank) {
       break;
     case 'source':
       command.source();
+      break;
+    case 'vocadb':
+    if(rank >= access) {
+      command.vocadb(msg.substring(8));
+    }
       break;
   }
   function getCommand() {
